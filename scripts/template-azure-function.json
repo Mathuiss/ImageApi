@@ -1,26 +1,13 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "sites_mg_imageapi_name": {
-            "defaultValue": "mg-imageapi",
-            "type": "String"
-        },
-        "serverfarms_ASP_imageapigrp_a078_name": {
-            "defaultValue": "ASP-imageapigrp-a078",
-            "type": "String"
-        },
-        "storageAccounts_imgapistorage_name": {
-            "defaultValue": "imgapistorage",
-            "type": "String"
-        }
-    },
+    "parameters": {},
     "variables": {},
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
-            "name": "[parameters('storageAccounts_imgapistorage_name')]",
+            "name": "imgapistorage",
             "location": "germanywestcentral",
             "sku": {
                 "name": "Standard_RAGRS",
@@ -56,7 +43,7 @@
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
-            "name": "[parameters('serverfarms_ASP_imageapigrp_a078_name')]",
+            "name": "ASP-imageapigrp-a078",
             "location": "Germany West Central",
             "sku": {
                 "name": "S1",
@@ -80,9 +67,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_imgapistorage_name'), '/default')]",
+            "name": "imgapistorage/default",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_imgapistorage_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', 'imgapistorage')]"
             ],
             "sku": {
                 "name": "Standard_RAGRS",
@@ -100,9 +87,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_imgapistorage_name'), '/default')]",
+            "name": "imgapistorage/default",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_imgapistorage_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', 'imgapistorage')]"
             ],
             "sku": {
                 "name": "Standard_RAGRS",
@@ -117,9 +104,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_imgapistorage_name'), '/default')]",
+            "name": "imgapistorage/default",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_imgapistorage_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', 'imgapistorage')]"
             ],
             "properties": {
                 "cors": {
@@ -130,9 +117,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/tableServices",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_imgapistorage_name'), '/default')]",
+            "name": "imgapistorage/default",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_imgapistorage_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', 'imgapistorage')]"
             ],
             "properties": {
                 "cors": {
@@ -143,27 +130,27 @@
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2018-11-01",
-            "name": "[parameters('sites_mg_imageapi_name')]",
+            "name": "mg-imageapi",
             "location": "Germany West Central",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_imageapigrp_a078_name'))]"
+                "[resourceId('Microsoft.Web/serverfarms', 'ASP-imageapigrp-a078')]"
             ],
             "kind": "functionapp",
             "properties": {
                 "enabled": true,
                 "hostNameSslStates": [
                     {
-                        "name": "[concat(parameters('sites_mg_imageapi_name'), '.azurewebsites.net')]",
+                        "name": "mg-imageapi.azurewebsites.net",
                         "sslState": "Disabled",
                         "hostType": "Standard"
                     },
                     {
-                        "name": "[concat(parameters('sites_mg_imageapi_name'), '.scm.azurewebsites.net')]",
+                        "name": "mg-imageapi.scm.azurewebsites.net",
                         "sslState": "Disabled",
                         "hostType": "Repository"
                     }
                 ],
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_imageapigrp_a078_name'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'ASP-imageapigrp-a078')]",
                 "reserved": false,
                 "isXenon": false,
                 "hyperV": false,
@@ -181,10 +168,10 @@
         {
             "type": "Microsoft.Web/sites/config",
             "apiVersion": "2018-11-01",
-            "name": "[concat(parameters('sites_mg_imageapi_name'), '/web')]",
+            "name": "mg-imageapi/web",
             "location": "Germany West Central",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_mg_imageapi_name'))]"
+                "[resourceId('Microsoft.Web/sites', 'mg-imageapi')]"
             ],
             "properties": {
                 "numberOfWorkers": 1,
@@ -202,6 +189,7 @@
                 "phpVersion": "5.6",
                 "requestTracingEnabled": false,
                 "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
                 "httpLoggingEnabled": false,
                 "logsDirectorySizeLimit": 35,
                 "detailedErrorLoggingEnabled": false,
@@ -261,10 +249,10 @@
         {
             "type": "Microsoft.Web/sites/hostNameBindings",
             "apiVersion": "2018-11-01",
-            "name": "[concat(parameters('sites_mg_imageapi_name'), '/', parameters('sites_mg_imageapi_name'), '.azurewebsites.net')]",
+            "name": "mg-imageapi/mg-imageapi.azurewebsites.net",
             "location": "Germany West Central",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_mg_imageapi_name'))]"
+                "[resourceId('Microsoft.Web/sites', 'mg-imageapi')]"
             ],
             "properties": {
                 "siteName": "mg-imageapi",
@@ -274,10 +262,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_imgapistorage_name'), '/default/azure-webjobs-hosts')]",
+            "name": "imgapistorage/default/azure-webjobs-hosts",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_imgapistorage_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_imgapistorage_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', 'imgapistorage', 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', 'imgapistorage')]"
             ],
             "properties": {
                 "defaultEncryptionScope": "$account-encryption-key",
@@ -288,10 +276,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccounts_imgapistorage_name'), '/default/azure-webjobs-secrets')]",
+            "name": "imgapistorage/default/azure-webjobs-secrets",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_imgapistorage_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_imgapistorage_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', 'imgapistorage', 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', 'imgapistorage')]"
             ],
             "properties": {
                 "defaultEncryptionScope": "$account-encryption-key",
