@@ -15,7 +15,7 @@ namespace ImageApi
     {
         [FunctionName("Entrypoint")]
         public static async Task<IActionResult> GetImageHandle(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "image")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "image")] HttpRequest req,
             [Queue("queryqueue")] IAsyncCollector<Dictionary<string, string>> queryQueue,
             IBinder binder,
             ILogger log
