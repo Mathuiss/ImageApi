@@ -6,7 +6,6 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace ImageApi
@@ -26,7 +25,6 @@ namespace ImageApi
             if (req.Query.ContainsKey("query"))
             {
                 query = req.Query["query"];
-                query = query.Replace("-", ""); // We guarantee the first - seperates the query from the guid
             }
             else
             {
