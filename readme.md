@@ -7,3 +7,5 @@ The functionality of the api is fairly simple. We just want to download an image
 The problem with the above approach is that it can take quite a long time for both the image to be downloaded, and text to be inserted into the image. Because we want to give the user a smooth user experience we are going to use the following infrastructure:
 
 ![Infrastructure](https://github.com/Mathuiss/ImageApi/blob/master/extra/Infrastructure.png)
+
+bljksdgnldksnfgv
